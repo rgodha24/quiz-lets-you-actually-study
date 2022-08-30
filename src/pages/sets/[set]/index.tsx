@@ -2,6 +2,7 @@ import { prisma } from "../../../server/db/client";
 import type { GetServerSideProps } from "next";
 import { z } from "zod";
 import { inferAsyncReturnType } from "@trpc/server";
+import Term from "../../../component/term";
 
 // TODO: make a page for if the set doesn't exist
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -58,7 +59,7 @@ const SetPage = (props: NonNullable<inferAsyncReturnType<typeof getSetData>>) =>
     title: {props.title}
   </h1>
   {props.terms.map((term) => {
-    return <p key={term.id}>{term.term} | {term.definition}</p>
+    return <Term {...term} key={term.id}></Term>
   })}
   </>;
 };
