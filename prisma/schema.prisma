@@ -18,9 +18,39 @@ model Example {
     id String @id @default(cuid())
 }
 
+model Term {
+    id         String   @id @default(cuid())
+    createdAt  DateTime @default(now())
+    term       String
+    definition String
+
+    Set          Set            @relation(fields: [setId], references: [id])
+    setId        Int
+    userProgress UserProgress[]
+}
+
+model Set {
+    id           Int            @id @default(autoincrement())
+    createdBy    Account        @relation(fields: [accountId], references: [id])
+    createdAt    DateTime       @default(now())
+    accountId    String
+    title        String
+    terms        Term[]
+    UserProgress UserProgress[]
+}
+
+model UserProgress {
+    id           String  @id @default(cuid())
+    account      Account @relation(fields: [accountId], references: [id])
+    set          Set     @relation(fields: [setId], references: [id])
+    accountId    String
+    setId        Int
+    writeCorrect Term[]
+}
+
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
+    id                String         @id @default(cuid())
     userId            String
     type              String
     provider          String
@@ -32,7 +62,9 @@ model Account {
     scope             String?
     id_token          String? //@db.Text
     session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+    Sets              Set[]
+    UserProgress      UserProgress[]
 
     @@unique([provider, providerAccountId])
 }
