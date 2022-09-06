@@ -56,49 +56,26 @@ async function getSetData(set: number) {
 }
 
 const WritePage = (props: NonNullable<inferAsyncReturnType<typeof getSetData>>) => {
-  const term = trpc.useQuery(["write.next-term", { setId: props.id }]);
-  const [answer, setAnswer] = useState("");
-  const [lastCorrect, setLastCorrect] = useState<boolean | undefined>(undefined);
+  const [termIndex, setTermIndex] = useState(0);
+  const [flip, setFlip] = useState(false);
 
-  const handleSubmit = () => {
-    term.refetch();
-    // trpc.useMutation(["write.answer", ])
-    if (answer === term.data?.definition) {
-      setLastCorrect(true);
-    } else {
-      setLastCorrect(false);
-    }
-    setAnswer("");
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.includes("\n")) {
-      handleSubmit();
-    } else {
-      setAnswer(e.target.value);
+  const lastTerm = () => {
+    if (termIndex !== 0) {
+      setTermIndex((t) => t - 1);
     }
   };
+  const nextTerm = () => {
+    if (termIndex !== props.terms.length - 1) {
+      setTermIndex((t) => t + 1);
+    }
+  }
 
   return (
-    <>
-      term: {term.data?.term}
-      <br />
-      <input type='text' value={answer} onChange={handleChange} />
-      <br />
-      <button type='submit' onClick={handleSubmit}>
-        submit
-      </button>
-      <br />
-      <p className={lastCorrect ? "text-green-500" : "text-red-500"}>
-        {lastCorrect !== undefined
-          ? lastCorrect
-            ? "The last answer was correct"
-            : "the last answer was incorrect"
-          : null}
-      </p>
-      <br />
-      answer: {term.data?.definition}
-    </>
+    <div className="flex text-3xl justify-between  ">
+      <button onClick={()=>lastTerm()}>Last Term</button>
+      <button onClick={()=>setFlip(f=>!f)}>{flip ? props.terms[termIndex]?.definition : props.terms[termIndex]?.term}</button>
+      <button onClick={()=>nextTerm()}>Next Term</button>
+    </div>
   );
 };
 
