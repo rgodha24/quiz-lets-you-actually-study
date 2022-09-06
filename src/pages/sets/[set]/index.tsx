@@ -52,15 +52,17 @@ async function getSetData(set: number) {
   });
   return data;
 }
+type GetSetData = typeof getSetData;
 
-const SetPage = (props: NonNullable<inferAsyncReturnType<typeof getSetData>>) => {
-  return <>
-  <h1>
-    title: {props.title}
-  </h1>
-  {props.terms.map((term) => {
-    return <Term {...term} key={term.id}></Term>
-  })}
-  </>;
+const SetPage = (props: NonNullable<inferAsyncReturnType<GetSetData>>) => {
+  return (
+    <>
+      <div></div>
+      <h1>title: {props.title}</h1>
+      {props.terms.map((term) => {
+        return <Term {...term} key={term.id}></Term>;
+      })}
+    </>
+  );
 };
 export default SetPage;

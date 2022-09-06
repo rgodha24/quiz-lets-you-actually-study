@@ -4,11 +4,15 @@ import superjson from "superjson";
 
 import { exampleRouter } from "./example";
 import { protectedExampleRouter } from "./protected-example-router";
+import { writeRouter } from "./write";
+import { learnRouter } from "./learn";
 
 export const appRouter = createRouter()
   .transformer(superjson)
   .merge("example.", exampleRouter)
-  .merge("question.", protectedExampleRouter);
+  .merge("question.", protectedExampleRouter)
+  .merge("write.", writeRouter)
+  .merge("learn.", learnRouter);
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
