@@ -2,7 +2,7 @@ import { prisma } from "../../../server/db/client";
 import type { GetServerSideProps } from "next";
 import { z } from "zod";
 import { inferAsyncReturnType } from "@trpc/server";
-import Term from "../../../component/term";
+import Term from "../../../components/term";
 
 // TODO: make a page for if the set doesn't exist
 export const getServerSideProps: GetServerSideProps = async (context) => {

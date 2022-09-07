@@ -44,7 +44,7 @@ async function getSetData(set: number) {
       id: set,
     },
     include: {
-      terms: true,
+      // terms: true,
       createdBy: true,
       // TODO: add user progress with getserversession from next auth
       // UserProgress: {

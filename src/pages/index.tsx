@@ -2,7 +2,7 @@ import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "
 import Head from "next/head";
 import { trpc } from "../utils/trpc";
 import { prisma } from "../server/db/client";
-import Set from "../component/Set";
+import Set from "../components/Set";
 import { signIn } from "next-auth/react";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
