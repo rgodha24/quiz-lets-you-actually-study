@@ -10,7 +10,7 @@ import { learnRouter } from "./learn";
 export const appRouter = createRouter()
   .transformer(superjson)
   .merge("example.", exampleRouter)
-  .merge("question.", protectedExampleRouter)
+  .merge("protected.", protectedExampleRouter)
   .merge("write.", writeRouter)
   .merge("learn.", learnRouter);
 

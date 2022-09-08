@@ -1,13 +1,15 @@
 import { prisma } from "../../../server/db/client";
-import type { GetServerSideProps } from "next";
+import type { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { z } from "zod";
 import { inferAsyncReturnType } from "@trpc/server";
 import type { Term } from "@prisma/client";
 import { useState } from "react";
 import { trpc } from "../../../utils/trpc";
+import { unstable_getServerSession as getServerSession } from "next-auth";
+import { authOptions } from "../../api/auth/[...nextauth]";
 
 // TODO: make a page for if the set doesn't exist
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
   const setSchema = z.number();
   const set = setSchema.safeParse(Number(context.params?.set));
 
@@ -16,7 +18,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     console.log(set);
     return {
       redirect: {
-        destination: "/sets/1",
+        destination: "/",
         permanent: false,
       },
     };
@@ -35,6 +37,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       ...setData,
+      session: await getServerSession(context.req, context.res, authOptions),
     },
   };
 };

@@ -1,38 +1,42 @@
-import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
-import Head from "next/head";
-import { trpc } from "../utils/trpc";
+import type { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { prisma } from "../server/db/client";
 import Set from "../components/Set";
 import { signIn } from "next-auth/react";
-import { unstable_getServerSession } from "next-auth";
+import { unstable_getServerSession as getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
-import { getSession } from "next-auth/react";
+import { trpc } from "../utils/trpc";
+import { useSession } from "next-auth/react";
+import { InferProps } from "../types";
+import Navbar from "../components/Navbar";
 
-const getServerSideProps = async (ctx: any) => {
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const sets = prisma.set.findMany({ take: 20 });
+  const session = await getServerSession(ctx.req, ctx.res, authOptions);
 
   return {
     props: {
       sets: await sets,
-      session: JSON.stringify(await unstable_getServerSession(ctx.req, ctx.res, authOptions)),
+      session: session,
     },
   };
 };
 
-const Home: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (props) => {
+const Home: NextPage<InferProps<typeof getServerSideProps>> = (props) => {
+  const session = useSession();
   return (
     <>
-      <button className='text-2xl' onClick={() => signIn()}>
-        LOGIN
-      </button>
+      <Navbar />
+      
       {props.sets.map((set) => {
-        return <Set {...set} key={set.id} />;
+        return (
+          <div key={set.id}>
+            <br />
+            <Set {...set} />
+          </div>
+        );
       })}
-      {props.session}
-      {JSON.stringify(getSession())}
     </>
   );
 };
 
 export default Home;
-export { getServerSideProps };

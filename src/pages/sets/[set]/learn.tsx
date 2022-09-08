@@ -4,6 +4,8 @@ import { z } from "zod";
 import { inferAsyncReturnType } from "@trpc/server";
 import Term from "../../../components/term";
 import { trpc } from "../../../utils/trpc";
+import { unstable_getServerSession as getServerSession } from "next-auth";
+import { authOptions } from "../../api/auth/[...nextauth]";
 
 // TODO: make a page for if the set doesn't exist
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -34,6 +36,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       ...setData,
+      session: await getServerSession(context.req, context.res, authOptions),
+
     },
   };
 };
